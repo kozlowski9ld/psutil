@@ -146,6 +146,7 @@ elif WINDOWS:
     from ._psutil_windows import NORMAL_PRIORITY_CLASS  # NOQA
     from ._psutil_windows import REALTIME_PRIORITY_CLASS  # NOQA
     from ._pswindows import CONN_DELETE_TCB  # NOQA
+    from ._psutil_windows import WIN_RLIMIT_MEMORY  # NOQA
 
 elif MACOS:
     from . import _psosx as _psplatform
@@ -893,7 +894,6 @@ class Process(object):
             else:
                 return self._proc.ionice_set(ioclass, value)
 
-    # Linux only
     if hasattr(_psplatform.Process, "rlimit"):
 
         def rlimit(self, resource, limits=None):

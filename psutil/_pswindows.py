@@ -52,6 +52,8 @@ from ._psutil_windows import HIGH_PRIORITY_CLASS
 from ._psutil_windows import IDLE_PRIORITY_CLASS
 from ._psutil_windows import NORMAL_PRIORITY_CLASS
 from ._psutil_windows import REALTIME_PRIORITY_CLASS
+from ._psutil_windows import WIN_RLIMIT_MEMORY
+
 
 if sys.version_info >= (3, 4):
     import enum
@@ -67,6 +69,7 @@ __extra__all__ = [
     "NORMAL_PRIORITY_CLASS", "REALTIME_PRIORITY_CLASS",
     "CONN_DELETE_TCB",
     "AF_LINK",
+    "WIN_RLIMIT_MEMORY",
 ]
 
 
@@ -1057,3 +1060,10 @@ class Process(object):
         ctx_switches = self.oneshot_info()[pinfo_map['ctx_switches']]
         # only voluntary ctx switches are supported
         return _common.pctxsw(ctx_switches, 0)
+
+    @wrap_exceptions
+    def rlimit(self, resource, limits=None):
+        if limits is None:
+            return cext.proc_rlimit_get(resource)
+        else:
+            raise NotImplementedError  # XXX

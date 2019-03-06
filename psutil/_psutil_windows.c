@@ -50,6 +50,8 @@
 #define AF_INET6 23
 #endif
 
+#define WIN_RLIMIT_MEMORY 1
+
 
 PIP_ADAPTER_ADDRESSES
 psutil_get_nic_addresses() {
@@ -3357,6 +3359,16 @@ psutil_sensors_battery(PyObject *self, PyObject *args) {
 }
 
 
+/*
+ * Get process resource limits.
+ */
+static PyObject *
+psutil_proc_rlimit_get(PyObject *self, PyObject *args) {
+    QueryInformationJobObject();
+    return Py_BuildValue("i", 88);
+}
+
+
 // ------------------------ Python init ---------------------------
 
 static PyMethodDef
@@ -3416,6 +3428,8 @@ PsutilMethods[] = {
      "Return the number of handles opened by process."},
     {"proc_memory_maps", psutil_proc_memory_maps, METH_VARARGS,
      "Return a list of process's memory mappings"},
+    {"proc_rlimit_get", psutil_proc_rlimit_get, METH_VARARGS,
+     "Get process resource limits."},
 
     // --- alternative pinfo interface
     {"proc_info", psutil_proc_info, METH_VARARGS,
@@ -3660,6 +3674,10 @@ void init_psutil_windows(void)
         module, "WINDOWS_8_1", PSUTIL_WINDOWS_8_1);
     PyModule_AddIntConstant(
         module, "WINDOWS_10", PSUTIL_WINDOWS_10);
+
+    // resource limits
+    PyModule_AddIntConstant(
+        module, "WIN_RLIMIT_MEMORY", WIN_RLIMIT_MEMORY);
 
 #if PY_MAJOR_VERSION >= 3
     return module;
